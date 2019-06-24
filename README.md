@@ -1,6 +1,6 @@
 # polyhymnia
 
-[![]([![](https://jitpack.io/v/iamdennisme/polyhymnia.svg)](https://jitpack.io/#iamdennisme/polyhymnia))
+[![](https://jitpack.io/v/iamdennisme/polyhymnia.svg)](https://jitpack.io/#iamdennisme/polyhymnia)
 
 polyhymnia is a ffmpeg player
 
