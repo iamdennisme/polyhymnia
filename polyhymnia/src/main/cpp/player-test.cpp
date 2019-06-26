@@ -7,7 +7,7 @@ static AudioPlayer *player;
 
 extern "C" JNIEXPORT void
 JNICALL
- Java_com_dennisce_polyhymnia_PolyhymniaPlayer_init(
+ Java_com_dennisce_polyhymnia_NdkPlayer_init(
         JNIEnv *env,
         jobject /* this */, jobjectArray _srcs) {
 //将java传入的字符串数组转为c字符串数组
@@ -23,7 +23,7 @@ JNICALL
 
 extern "C" JNIEXPORT void
 JNICALL
-  Java_com_dennisce_polyhymnia_PolyhymniaPlayer_changeVolumes(
+  Java_com_dennisce_polyhymnia_NdkPlayer_changeVolumes(
         JNIEnv *env,
         jobject /* this */, jobjectArray _volumes) {
 //将java传入的字符串数组转为c字符串数组
@@ -39,7 +39,7 @@ JNICALL
 
 extern "C" JNIEXPORT void
 JNICALL
-  Java_com_dennisce_polyhymnia_PolyhymniaPlayer_changeTempo(
+  Java_com_dennisce_polyhymnia_NdkPlayer_changeTempo(
         JNIEnv *env,
         jobject /* this */, jstring _tempo) {
     char *tempo = const_cast<char *>(env->GetStringUTFChars(_tempo, 0));
@@ -48,7 +48,7 @@ JNICALL
 }
 extern "C" JNIEXPORT void
 JNICALL
- Java_com_dennisce_polyhymnia_PolyhymniaPlayer_play(
+ Java_com_dennisce_polyhymnia_NdkPlayer_play(
         JNIEnv *env,
         jobject /* this */) {
     player->play();
@@ -56,7 +56,7 @@ JNICALL
 
 extern "C" JNIEXPORT void
 JNICALL
-  Java_com_dennisce_polyhymnia_PolyhymniaPlayer_pause(
+  Java_com_dennisce_polyhymnia_NdkPlayer_pause(
         JNIEnv *env,
         jobject /* this */) {
     player->pause();
@@ -64,14 +64,14 @@ JNICALL
 
 extern "C" JNIEXPORT void
 JNICALL
-  Java_com_dennisce_polyhymnia_PolyhymniaPlayer_release(
+  Java_com_dennisce_polyhymnia_NdkPlayer_release(
         JNIEnv *env,
         jobject /* this */) {
     player->release();
 }
 extern "C" JNIEXPORT void
 JNICALL
-  Java_com_dennisce_polyhymnia_PolyhymniaPlayer_seek(
+  Java_com_dennisce_polyhymnia_NdkPlayer_seek(
         JNIEnv *env,
         jobject /* this */, jdouble secs) {
     player->seek(secs);
@@ -79,7 +79,7 @@ JNICALL
 
 extern "C" JNIEXPORT jdouble
 JNICALL
-  Java_com_dennisce_polyhymnia_PolyhymniaPlayer_duration(
+  Java_com_dennisce_polyhymnia_NdkPlayer_duration(
         JNIEnv *env,
         jobject /* this */) {
     return player->total_time;
@@ -87,7 +87,7 @@ JNICALL
 
 extern "C" JNIEXPORT jdouble
 JNICALL
-  Java_com_dennisce_polyhymnia_PolyhymniaPlayer_position(
+  Java_com_dennisce_polyhymnia_NdkPlayer_position(
         JNIEnv *env,
         jobject /* this */) {
     return player->current_time;

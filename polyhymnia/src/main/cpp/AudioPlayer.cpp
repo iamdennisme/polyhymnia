@@ -70,6 +70,8 @@ AVFrame *AudioPlayer::get() {
     while (isPlay) {
         if (queue.empty()) {
             pthread_cond_wait(&not_empty, &mutex);
+            current_time = av_q2d(time_base) * out->pts;
+            LOGI("get frame:%d,time:%lf,change:%d", queue.size(), current_time, change);
         } else {
             AVFrame *src = queue.front();
             if (av_frame_ref(out, src) < 0)return NULL;

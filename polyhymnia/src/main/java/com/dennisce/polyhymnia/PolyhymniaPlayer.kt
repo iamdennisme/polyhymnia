@@ -1,49 +1,103 @@
 package com.dennisce.polyhymnia
 
+import android.annotation.SuppressLint
+import android.util.Log
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import java.util.concurrent.TimeUnit
+
 class PolyhymniaPlayer {
+
+
+    private val mPlayer by lazy {
+        NdkPlayer()
+    }
+
+    private var mProgressDisposable: Disposable?=null
+
+    private var oldProgress: Double = 0.0
+
+    var onStateChangeListener:OnStateChangeListener?=null
+     var onProgressListener:OnProgressListener?=null
+
     /**
      * 初始化
      */
-    external fun init(paths: Array<String>)
+    fun init(paths: Array<String>){
+        mPlayer.init(paths)
+        onStateChangeListener?.onChange(State.PREPARE)
+    }
     /**
      * 播放
      */
-    external fun play()
+    @SuppressLint("CheckResult")
+    fun play(){
+        mPlayer.play()
+        onStateChangeListener?.onChange(State.PLAY)
+        Observable.interval(1000,TimeUnit.MILLISECONDS).subscribe({
+            onProgressListener?.onProgress(getPosition().toInt())
+            if (oldProgress==getPosition()){
+                onStateChangeListener?.onChange(State.COMPLETE)
+                mProgressDisposable?.dispose()
+            }
+            oldProgress=getPosition()
+        },{
+
+        }).run {
+            mProgressDisposable=this
+        }
+    }
 
     /**
      * 暂停
      */
-    external fun pause()
+     fun pause(){
+        mPlayer.pause()
+        mProgressDisposable?.dispose()
+        onStateChangeListener?.onChange(State.PAUSE)
+    }
 
     /**
      * 释放资源
      */
-    external fun release()
+     fun release(){
+        mProgressDisposable?.dispose()
+        mPlayer.release()
+    }
 
     /**
      * 修改每个音量
      */
-    external fun changeVolumes(volumes: Array<String>)
+    fun changeVolumes(volumes: Array<String>){
+        mPlayer.changeVolumes(volumes)
+    }
 
     /**
      * 变速
      */
-    external fun changeTempo(tempo: String)
-
+    fun changeTempo(tempo: String){
+        mPlayer.changeTempo(tempo)
+    }
     /**
      * 总时长 秒
      */
-    external fun duration(): Double
+    fun getDuration(): Double{
+        return mPlayer.duration()
+    }
 
     /**
      * 当前进度 秒
      */
-    external fun position(): Double
+    fun getPosition(): Double{
+        return mPlayer.position()
+    }
 
     /**
      * 进度跳转
      */
-    external fun seek(sec: Double)
+     fun seek(sec: Double){
+        mPlayer.seek(sec)
+    }
 
     companion object {
         init {
@@ -55,5 +109,20 @@ class PolyhymniaPlayer {
             System.loadLibrary("avformat-57")
             System.loadLibrary("native-lib")
         }
+    }
+
+
+    interface OnStateChangeListener{
+        fun onChange(state:State)
+    }
+    interface OnProgressListener{
+        fun onProgress(progress:Int)
+    }
+
+    enum class State{
+        PLAY,
+        PAUSE,
+        COMPLETE,
+        PREPARE
     }
 }
