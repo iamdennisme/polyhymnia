@@ -56,5 +56,8 @@ class MainActivity : AppCompatActivity() {
         btn_pause.setOnClickListener {
             player.pause()
         }
+        btn_stop.setOnClickListener {
+            player.stop()
+        }
     }
 }

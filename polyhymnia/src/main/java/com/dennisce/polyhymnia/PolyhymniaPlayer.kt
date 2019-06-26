@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 class PolyhymniaPlayer {
@@ -13,54 +14,76 @@ class PolyhymniaPlayer {
         NdkPlayer()
     }
 
-    private var mProgressDisposable: Disposable?=null
+    private var mProgressDisposable: Disposable? = null
 
     private var oldProgress: Double = 0.0
 
-    var onStateChangeListener:OnStateChangeListener?=null
-     var onProgressListener:OnProgressListener?=null
+    var onStateChangeListener: OnStateChangeListener? = null
+    var onProgressListener: OnProgressListener? = null
 
     /**
      * 初始化
      */
-    fun init(paths: Array<String>){
+    fun init(paths: Array<String>) {
         mPlayer.init(paths)
         onStateChangeListener?.onChange(State.PREPARE)
     }
+
     /**
      * 播放
      */
     @SuppressLint("CheckResult")
-    fun play(){
+    fun play() {
+        throwNotInit()
         mPlayer.play()
         onStateChangeListener?.onChange(State.PLAY)
-        Observable.interval(1000,TimeUnit.MILLISECONDS).subscribe({
+        Observable.interval(1000, TimeUnit.MILLISECONDS).subscribe({
             onProgressListener?.onProgress(getPosition().toInt())
-            if (oldProgress==getPosition()){
+            if (oldProgress == getPosition()) {
                 onStateChangeListener?.onChange(State.COMPLETE)
                 mProgressDisposable?.dispose()
             }
-            oldProgress=getPosition()
-        },{
+            oldProgress = getPosition()
+        }, {
 
         }).run {
-            mProgressDisposable=this
+            mProgressDisposable = this
         }
     }
 
     /**
      * 暂停
      */
-     fun pause(){
+    fun pause() {
+        throwNotInit()
         mPlayer.pause()
         mProgressDisposable?.dispose()
         onStateChangeListener?.onChange(State.PAUSE)
     }
 
     /**
+     * 停止上新的
+     */
+
+    fun stop() {
+        if (!isInit()) {
+            return
+        }
+        mPlayer.pause()
+        mPlayer.release()
+        mProgressDisposable?.dispose()
+        onStateChangeListener?.onChange(State.STOP)
+
+
+    }
+
+    /**
      * 释放资源
      */
-     fun release(){
+    fun release() {
+        if (!isInit()){
+            return
+        }
         mProgressDisposable?.dispose()
         mPlayer.release()
     }
@@ -68,35 +91,51 @@ class PolyhymniaPlayer {
     /**
      * 修改每个音量
      */
-    fun changeVolumes(volumes: Array<String>){
+    fun changeVolumes(volumes: Array<String>) {
+        throwNotInit()
         mPlayer.changeVolumes(volumes)
     }
 
     /**
      * 变速
      */
-    fun changeTempo(tempo: String){
+    fun changeTempo(tempo: String) {
+        throwNotInit()
         mPlayer.changeTempo(tempo)
     }
+
     /**
      * 总时长 秒
      */
-    fun getDuration(): Double{
+    fun getDuration(): Double {
+        throwNotInit()
         return mPlayer.duration()
     }
 
     /**
      * 当前进度 秒
      */
-    fun getPosition(): Double{
+    fun getPosition(): Double {
+        throwNotInit()
         return mPlayer.position()
     }
 
     /**
      * 进度跳转
      */
-     fun seek(sec: Double){
+    fun seek(sec: Double) {
+        throwNotInit()
         mPlayer.seek(sec)
+    }
+
+    fun isInit(): Boolean {
+        return mPlayer.isInit()
+    }
+
+    private fun throwNotInit() {
+        if (!isInit()) {
+            throw Throwable("you must init first")
+        }
     }
 
     companion object {
@@ -112,16 +151,18 @@ class PolyhymniaPlayer {
     }
 
 
-    interface OnStateChangeListener{
-        fun onChange(state:State)
-    }
-    interface OnProgressListener{
-        fun onProgress(progress:Int)
+    interface OnStateChangeListener {
+        fun onChange(state: State)
     }
 
-    enum class State{
+    interface OnProgressListener {
+        fun onProgress(progress: Int)
+    }
+
+    enum class State {
         PLAY,
         PAUSE,
+        STOP,
         COMPLETE,
         PREPARE
     }

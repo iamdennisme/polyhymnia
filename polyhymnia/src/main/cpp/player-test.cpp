@@ -3,6 +3,8 @@
 //
 #include "AudioPlayer.h"
 
+
+bool is_init= false;
 static AudioPlayer *player;
 
 extern "C" JNIEXPORT void
@@ -19,6 +21,7 @@ JNICALL
         pathArr[i] = const_cast<char *>(env->GetStringUTFChars(str, 0));
     }
     player = new AudioPlayer(pathArr, len);
+    is_init= true;
 }
 
 extern "C" JNIEXPORT void
@@ -68,6 +71,7 @@ JNICALL
         JNIEnv *env,
         jobject /* this */) {
     player->release();
+    is_init= false;
 }
 extern "C" JNIEXPORT void
 JNICALL
@@ -91,4 +95,12 @@ JNICALL
         JNIEnv *env,
         jobject /* this */) {
     return player->current_time;
+}
+
+extern "C" JNIEXPORT jboolean
+JNICALL
+  Java_com_dennisce_polyhymnia_NdkPlayer_isInit(
+        JNIEnv *env,
+        jobject /* this */) {
+    return is_init;
 }

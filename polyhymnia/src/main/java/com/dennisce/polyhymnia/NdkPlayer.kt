@@ -45,6 +45,8 @@ class NdkPlayer {
      */
     external fun seek(sec: Double)
 
+    external fun isInit():Boolean
+
 
     companion object {
         init {
