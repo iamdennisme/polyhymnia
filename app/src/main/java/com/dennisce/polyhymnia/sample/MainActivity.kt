@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity() {
 
         btn_prepare.setOnClickListener {
             val path = "sdcard/test.mp3"
-            player.init(arrayOf(path))
+            val path1="sdcard/a.mp3"
+            player.init(arrayOf(path1))
         }
         btn_play.setOnClickListener {
             player.play()

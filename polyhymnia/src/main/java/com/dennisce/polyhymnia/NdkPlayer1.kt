@@ -1,6 +1,6 @@
 package com.dennisce.polyhymnia
 
-class NdkPlayer:NdkPlayerInterface {
+class NdkPlayer1 : NdkPlayerInterface {
     /**
      * 初始化
      */
@@ -8,7 +8,7 @@ class NdkPlayer:NdkPlayerInterface {
     /**
      * 播放
      */
-    external override fun play()
+    external  override fun play()
 
     /**
      * 暂停
@@ -23,12 +23,12 @@ class NdkPlayer:NdkPlayerInterface {
     /**
      * 修改每个音量
      */
-    external  override fun changeVolumes(volumes: Array<String>)
+    external override fun changeVolumes(volumes: Array<String>)
 
     /**
      * 变速
      */
-    external override fun changeTempo(tempo: String)
+    external  override fun changeTempo(tempo: String)
 
     /**
      * 总时长 秒

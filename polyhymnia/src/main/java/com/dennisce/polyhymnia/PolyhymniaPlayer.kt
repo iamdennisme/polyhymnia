@@ -7,11 +7,13 @@ import io.reactivex.disposables.Disposable
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
-class PolyhymniaPlayer {
-
+class PolyhymniaPlayer(type:Type) {
 
     private val mPlayer by lazy {
-        NdkPlayer()
+        if (type==Type.MAIN)
+            NdkPlayer()
+        else
+            NdkPlayer1()
     }
 
     private var mProgressDisposable: Disposable? = null
@@ -165,5 +167,10 @@ class PolyhymniaPlayer {
         STOP,
         COMPLETE,
         PREPARE
+    }
+
+    enum class Type{
+        MAIN,
+        SECOND
     }
 }
