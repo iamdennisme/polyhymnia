@@ -40,6 +40,10 @@ class PolyhymniaPlayer(type:Type) {
         mPlayer.play()
         onStateChangeListener?.onChange(State.PLAY)
         Observable.interval(1000, TimeUnit.MILLISECONDS).subscribe({
+            if (!isInit()){
+                stop()
+                return@subscribe
+            }
             onProgressListener?.onProgress(getPosition().toInt())
             if (oldProgress == getPosition()) {
                 onStateChangeListener?.onChange(State.COMPLETE)
