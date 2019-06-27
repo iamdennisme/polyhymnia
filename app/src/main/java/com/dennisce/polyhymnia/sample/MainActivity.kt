@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private val player by lazy {
-        PolyhymniaPlayer().apply {
+        PolyhymniaPlayer(PolyhymniaPlayer.Type.MAIN).apply {
             onStateChangeListener=object :PolyhymniaPlayer.OnStateChangeListener{
                 override fun onChange(state: PolyhymniaPlayer.State) {
                      Log.d("PolyhymniaPlayer",state.toString())
@@ -46,8 +46,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         btn_prepare.setOnClickListener {
-            val path = "sdcard/test.mp3"
-            val path1="sdcard/a.mp3"
+            val path1="sdcard/out.mp3"
             player.init(arrayOf(path1))
         }
         btn_play.setOnClickListener {

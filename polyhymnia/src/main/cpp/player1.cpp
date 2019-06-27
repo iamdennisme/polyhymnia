@@ -4,8 +4,8 @@
 #include "AudioPlayer.h"
 
 
-bool is_init= false;
-static AudioPlayer *player;
+bool is_init1= false;
+static AudioPlayer *player1;
 
 extern "C" JNIEXPORT void
 JNICALL
@@ -20,8 +20,8 @@ JNICALL
         jstring str = static_cast<jstring>(env->GetObjectArrayElement(_srcs, i));
         pathArr[i] = const_cast<char *>(env->GetStringUTFChars(str, 0));
     }
-    player = new AudioPlayer(pathArr, len);
-    is_init= true;
+    player1 = new AudioPlayer(pathArr, len);
+    is_init1= true;
 }
 
 extern "C" JNIEXPORT void
@@ -35,9 +35,9 @@ JNICALL
     for (i = 0; i < len; i++) {
         jstring str = static_cast<jstring>(env->GetObjectArrayElement(_volumes, i));
         char *volume = const_cast<char *>(env->GetStringUTFChars(str, 0));
-        player->volumes[i] = volume;
+        player1->volumes[i] = volume;
     }
-    player->change = 1;
+    player1->change = 1;
 }
 
 extern "C" JNIEXPORT void
@@ -46,15 +46,15 @@ JNICALL
         JNIEnv *env,
         jobject /* this */, jstring _tempo) {
     char *tempo = const_cast<char *>(env->GetStringUTFChars(_tempo, 0));
-    player->tempo = tempo;
-    player->change = 1;
+    player1->tempo = tempo;
+    player1->change = 1;
 }
 extern "C" JNIEXPORT void
 JNICALL
  Java_com_dennisce_polyhymnia_NdkPlayer1_play(
         JNIEnv *env,
         jobject /* this */) {
-    player->play();
+    player1->play();
 }
 
 extern "C" JNIEXPORT void
@@ -62,7 +62,7 @@ JNICALL
   Java_com_dennisce_polyhymnia_NdkPlayer1_pause(
         JNIEnv *env,
         jobject /* this */) {
-    player->pause();
+    player1->pause();
 }
 
 extern "C" JNIEXPORT void
@@ -70,15 +70,15 @@ JNICALL
   Java_com_dennisce_polyhymnia_NdkPlayer1_release(
         JNIEnv *env,
         jobject /* this */) {
-    player->release();
-    is_init= false;
+    player1->release();
+    is_init1= false;
 }
 extern "C" JNIEXPORT void
 JNICALL
   Java_com_dennisce_polyhymnia_NdkPlayer1_seek(
         JNIEnv *env,
         jobject /* this */, jdouble secs) {
-    player->seek(secs);
+    player1->seek(secs);
 }
 
 extern "C" JNIEXPORT jdouble
@@ -86,7 +86,7 @@ JNICALL
   Java_com_dennisce_polyhymnia_NdkPlayer1_duration(
         JNIEnv *env,
         jobject /* this */) {
-    return player->total_time;
+    return player1->total_time;
 }
 
 extern "C" JNIEXPORT jdouble
@@ -94,7 +94,7 @@ JNICALL
   Java_com_dennisce_polyhymnia_NdkPlayer1_position(
         JNIEnv *env,
         jobject /* this */) {
-    return player->current_time;
+    return player1->current_time;
 }
 
 extern "C" JNIEXPORT jboolean
@@ -102,5 +102,5 @@ JNICALL
   Java_com_dennisce_polyhymnia_NdkPlayer1_isInit(
         JNIEnv *env,
         jobject /* this */) {
-    return is_init;
+    return is_init1;
 }
