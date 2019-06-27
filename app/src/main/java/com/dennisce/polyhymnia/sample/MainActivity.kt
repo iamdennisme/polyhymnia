@@ -17,6 +17,9 @@ class MainActivity : AppCompatActivity() {
             onStateChangeListener=object :PolyhymniaPlayer.OnStateChangeListener{
                 override fun onChange(state: PolyhymniaPlayer.State) {
                      Log.d("PolyhymniaPlayer",state.toString())
+                    if (state==PolyhymniaPlayer.State.COMPLETE){
+                        stop()
+                    }
                 }
             }
             onProgressListener=object :PolyhymniaPlayer.OnProgressListener{
@@ -46,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         btn_prepare.setOnClickListener {
-            val path1="sdcard/out.mp3"
+            val path1="sdcard/test/a.mp3"
             player.init(arrayOf(path1))
         }
         btn_play.setOnClickListener {
