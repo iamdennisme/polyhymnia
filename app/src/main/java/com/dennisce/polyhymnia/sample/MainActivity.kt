@@ -14,11 +14,12 @@ class MainActivity : AppCompatActivity() {
 
     private val player by lazy {
         PolyhymniaPlayer(PolyhymniaPlayer.Type.MAIN).apply {
+            isLoop=true
             onStateChangeListener=object :PolyhymniaPlayer.OnStateChangeListener{
                 override fun onChange(state: PolyhymniaPlayer.State) {
                      Log.d("PolyhymniaPlayer",state.toString())
                     if (state==PolyhymniaPlayer.State.COMPLETE){
-                        stop()
+                        //stop()
                     }
                 }
             }

@@ -1,13 +1,13 @@
 package com.dennisce.polyhymnia
 
 import android.annotation.SuppressLint
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 class PolyhymniaPlayer(type:Type) {
+
+    var isLoop=false
 
     private val mPlayer by lazy {
         if (type==Type.MAIN)
@@ -43,8 +43,11 @@ class PolyhymniaPlayer(type:Type) {
             onProgressListener?.onProgress(getPosition().toInt())
             if (oldProgress == getPosition()) {
                 onStateChangeListener?.onChange(State.COMPLETE)
-                mProgressDisposable?.dispose()
-                stop()
+                if (isLoop){
+                    loop()
+                }else{
+                    stop()
+                }
                 return@subscribe
             }
             oldProgress = getPosition()
@@ -76,8 +79,19 @@ class PolyhymniaPlayer(type:Type) {
         mPlayer.release()
         mProgressDisposable?.dispose()
         onStateChangeListener?.onChange(State.STOP)
+    }
 
+    /**
+     * 循环
+     */
 
+    fun loop() {
+        onStateChangeListener?.onChange(State.LOOP)
+        if (!isInit()) {
+            return
+        }
+        mProgressDisposable?.dispose()
+        play()
     }
 
     /**
@@ -167,7 +181,8 @@ class PolyhymniaPlayer(type:Type) {
         PAUSE,
         STOP,
         COMPLETE,
-        PREPARE
+        PREPARE,
+        LOOP
     }
 
     enum class Type{
