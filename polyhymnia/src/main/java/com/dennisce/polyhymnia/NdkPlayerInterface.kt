@@ -14,7 +14,6 @@ interface NdkPlayerInterface{
      * 暂停
      */
      fun pause()
-
     /**
      * 释放资源
      */

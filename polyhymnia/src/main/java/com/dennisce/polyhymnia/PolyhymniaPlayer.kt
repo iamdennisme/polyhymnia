@@ -23,6 +23,8 @@ class PolyhymniaPlayer(type:Type) {
     var onStateChangeListener: OnStateChangeListener? = null
     var onProgressListener: OnProgressListener? = null
 
+    var isPlay =false
+
     /**
      * 初始化
      */
@@ -38,6 +40,7 @@ class PolyhymniaPlayer(type:Type) {
     fun play() {
         throwNotInit()
         mPlayer.play()
+        isPlay=true
         onStateChangeListener?.onChange(State.PLAY)
         Observable.interval(1000, TimeUnit.MILLISECONDS).subscribe({
             onProgressListener?.onProgress(getPosition().toInt())
@@ -63,6 +66,7 @@ class PolyhymniaPlayer(type:Type) {
     fun pause() {
         throwNotInit()
         mPlayer.pause()
+        isPlay=false
         mProgressDisposable?.dispose()
         onStateChangeListener?.onChange(State.PAUSE)
     }
@@ -76,6 +80,7 @@ class PolyhymniaPlayer(type:Type) {
             return
         }
         mPlayer.pause()
+        isPlay=false
         mPlayer.release()
         mProgressDisposable?.dispose()
         onStateChangeListener?.onChange(State.STOP)
@@ -103,6 +108,7 @@ class PolyhymniaPlayer(type:Type) {
         }
         mProgressDisposable?.dispose()
         mPlayer.release()
+        isPlay=false
     }
 
     /**
